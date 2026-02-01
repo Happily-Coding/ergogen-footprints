@@ -176,6 +176,7 @@ module.exports = {
     choc_v2_support: true,
     choc_v1_stabilizers_diameter: 1.9,
     allow_soldermask_bridges: true,
+    include_in_pos_files: false,
     switch_3dmodel_filename: '',
     switch_3dmodel_xyz_offset: [0, 0, 0],
     switch_3dmodel_xyz_rotation: [0, 0, 0],
@@ -205,7 +206,7 @@ module.exports = {
       ${p.ref_hide}
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (attr exclude_from_pos_files exclude_from_bom${p.allow_soldermask_bridges ? ' allow_soldermask_bridges' : ''})
+    (attr ${p.include_in_pos_files ? '' : 'exclude_from_pos_files'} exclude_from_bom${p.allow_soldermask_bridges ? ' allow_soldermask_bridges' : ''})
 
     ${''/* middle shaft hole */}
     ${p.include_plated_holes ? `
