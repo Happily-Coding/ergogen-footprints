@@ -39,6 +39,10 @@ module.exports = {
     include_bosses: false,
     include_silkscreen: true,
     include_courtyard: false,
+    switch_3dmodel_filename: '',
+    switch_3dmodel_xyz_offset: [0, 0, 0],
+    switch_3dmodel_xyz_rotation: [0, 0, 0],
+    switch_3dmodel_xyz_scale: [1, 1, 1],
     from: { type: 'net', value: 'GND' },
     to: { type: 'net', value: 'RST' },
   },
@@ -104,6 +108,13 @@ module.exports = {
     (pad "" np_thru_hole circle (at 0 -1.375 ${180 + p.r}) (size 0.75 0.75) (drill 0.75) (layers "*.Cu" "*.Mask"))
     (pad "" np_thru_hole circle (at 0 1.375 ${180 + p.r}) (size 0.75 0.75) (drill 0.75) (layers "*.Cu" "*.Mask"))
     `
+    const switch_3dmodel = `
+    (model ${p.switch_3dmodel_filename}
+      (offset (xyz ${p.switch_3dmodel_xyz_offset[0]} ${p.switch_3dmodel_xyz_offset[1]} ${p.switch_3dmodel_xyz_offset[2]}))
+      (scale (xyz ${p.switch_3dmodel_xyz_scale[0]} ${p.switch_3dmodel_xyz_scale[1]} ${p.switch_3dmodel_xyz_scale[2]}))
+      (rotate (xyz ${p.switch_3dmodel_xyz_rotation[0]} ${p.switch_3dmodel_xyz_rotation[1]} ${p.switch_3dmodel_xyz_rotation[2]}))
+    )
+    `
     const common_end = `
   )
     `
@@ -129,6 +140,10 @@ module.exports = {
       if (p.include_courtyard) {
         final += courtyard_back
       }
+    }
+
+    if (p.switch_3dmodel_filename) {
+      final += switch_3dmodel
     }
 
     final += common_end;
