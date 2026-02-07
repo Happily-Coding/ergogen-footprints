@@ -39,6 +39,19 @@
 //      to also account for the male connector plug and the wires. Recommended to be true
 //      at least once in the development of a board to confirm sufficient clearance for the
 //      connector and wires.
+//    connector_3dmodel_filename: default is ''
+//      Allows you to specify the path to a 3D model STEP or WRL file to be
+//      used when rendering the PCB. Use the ${VAR_NAME} syntax to point to
+//      a KiCad configured path.
+//    connector_3dmodel_xyz_offset: default is [0, 0, 0]
+//      xyz offset (in mm), used to adjust the position of the 3d model
+//      relative the footprint.
+//    connector_3dmodel_xyz_scale: default is [1, 1, 1]
+//      xyz scale, used to adjust the size of the 3d model relative to its
+//      original size.
+//    connector_3dmodel_xyz_rotation: default is [0, 0, 0]
+//      xyz rotation (in degrees), used to adjust the orientation of the 3d
+//      model relative the footprint.
 
 module.exports = {
   params: {
@@ -50,6 +63,10 @@ module.exports = {
     include_silkscreen: true,
     include_fabrication: true,
     include_courtyard: true,
+    connector_3dmodel_filename: '',
+    connector_3dmodel_xyz_offset: [0, 0, 0],
+    connector_3dmodel_xyz_scale: [1, 1, 1],
+    connector_3dmodel_xyz_rotation: [0, 0, 0],
     BAT_P: { type: 'net', value: 'BAT_P' },
     BAT_N: { type: 'net', value: 'GND' },
   },
@@ -284,11 +301,19 @@ module.exports = {
     )
         `
 
-    const reversible_traces = ` 
+    const reversible_traces = `
     (segment (start ${p.eaxy(-1, 1.8)}) (end ${p.eaxy(-1, 0)}) (width ${p.trace_width}) (layer "F.Cu") (net ${local_nets[0].index}))
     (segment (start ${p.eaxy(-1, 1.8)}) (end ${p.eaxy(-1, 0)}) (width ${p.trace_width}) (layer "B.Cu") (net ${local_nets[0].index}))
     (segment (start ${p.eaxy(1, 1.8)}) (end ${p.eaxy(1, 0)}) (width ${p.trace_width}) (layer "F.Cu") (net ${local_nets[1].index}))
     (segment (start ${p.eaxy(1, 1.8)}) (end ${p.eaxy(1, 0)}) (width ${p.trace_width}) (layer "B.Cu") (net ${local_nets[1].index}))
+        `
+
+    const connector_3dmodel = `
+        (model ${p.connector_3dmodel_filename}
+            (offset (xyz ${p.connector_3dmodel_xyz_offset[0]} ${p.connector_3dmodel_xyz_offset[1]} ${p.connector_3dmodel_xyz_offset[2]}))
+            (scale (xyz ${p.connector_3dmodel_xyz_scale[0]} ${p.connector_3dmodel_xyz_scale[1]} ${p.connector_3dmodel_xyz_scale[2]}))
+            (rotate (xyz ${p.connector_3dmodel_xyz_rotation[0]} ${p.connector_3dmodel_xyz_rotation[1]} ${p.connector_3dmodel_xyz_rotation[2]}))
+        )
         `
 
     let final = standard_opening;
@@ -322,6 +347,11 @@ module.exports = {
     } else if (p.side == "B") {
       final += back_pads;
     }
+
+    if (p.connector_3dmodel_filename) {
+      final += connector_3dmodel
+    }
+
     final += standard_closing;
     if (p.reversible && p.include_traces) {
       final += reversible_traces;
