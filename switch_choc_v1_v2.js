@@ -76,45 +76,54 @@
 //      Disables 'solder mask aperture bridges items with different nets' DRC check when set to true
 //      setting this option to false may be useful for debugging purposes, (applied locally to this footprint only)
 //      for global setting see `allow_soldermask_bridges_in_footprints` in a kicad template
-//    switch_3dmodel_filename: default is ''
+//    model_filename: default is ''
 //      Allows you to specify the path to a 3D model STEP or WRL file to be
 //      used when rendering the PCB. Use the ${VAR_NAME} syntax to point to
 //      a KiCad configured path.
-//    switch_3dmodel_xyz_offset: default is [0, 0, 0]
+//    model_xyz_offset: default is [0, 0, 0]
 //      xyz offset (in mm), used to adjust the position of the 3d model
 //      relative the footprint.
-//    switch_3dmodel_xyz_scale: default is [1, 1, 1]
+//    model_xyz_scale: default is [1, 1, 1]
 //      xyz scale, used to adjust the size of the 3d model relative to its
 //      original size.
-//    switch_3dmodel_xyz_rotation: default is [0, 0, 0]
+//    model_xyz_rotation: default is [0, 0, 0]
 //      xyz rotation (in degrees), used to adjust the orientation of the 3d
 //      model relative the footprint.
-//    hotswap_3dmodel_filename: default is ''
+//    hotswap_model_filename: default is ''
 //      Allows you to specify the path to a 3D model to be used when rendering
 //      the PCB. Allows for paths using a configured path by using the
 //      ${VAR_NAME} syntax.
-//    hotswap_3dmodel_xyz_offset: default is [0, 0, 0]
+//    hotswap_model_xyz_offset: default is [0, 0, 0]
 //      xyz offset (in mm), used to adjust the position of the 3d model
 //      relative the footprint.
-//    hotswap_3dmodel_xyz_scale: default is [1, 1, 1]
+//    hotswap_model_xyz_scale: default is [1, 1, 1]
 //      xyz scale, used to adjust the size of the 3d model relative its
 //      original size.
-//    hotswap_3dmodel_xyz_rotation: default is [0, 0, 0]
+//    hotswap_model_xyz_rotation: default is [0, 0, 0]
 //      xyz rotation (in degrees), used to adjust the orientation of the 3d
 //      model relative the footprint.
-//    keycap_3dmodel_filename: default is ''
+//    keycap_model_filename: default is ''
 //      Allows you to specify the path to a 3D model STEP or WRL file to be
 //      used when rendering the PCB. Use the ${VAR_NAME} syntax to point to
 //      a KiCad configured path.
-//    keycap_3dmodel_xyz_offset: default is [0, 0, 0]
+//    keycap_model_xyz_offset: default is [0, 0, 0]
 //      xyz offset (in mm), used to adjust the position of the 3d model
 //      relative the footprint.
-//    keycap_3dmodel_xyz_scale: default is [1, 1, 1]
+//    keycap_model_xyz_scale: default is [1, 1, 1]
 //      xyz scale, used to adjust the size of the 3d model relative to its
 //      original size.
-//    keycap_3dmodel_xyz_rotation: default is [0, 0, 0]
+//    keycap_model_xyz_rotation: default is [0, 0, 0]
 //      xyz rotation (in degrees), used to adjust the orientation of the 3d
 //      model relative the footprint.
+//    supplier_link: default is ''
+//      URL link to the supplier page for switches
+//      this will be added as a KiCad property for BOM export
+//    manufacturer_part_number: default is ''
+//      Manufacturer part number for switches
+//      this will be added as a KiCad property for BOM export
+//    do_not_populate: default is 'DNP'
+//      Do Not Populate flag for switches
+//      Set to 'DNP' to indicate the manufacturer should not try to place the part automatically
 //
 // Notes:
 // - Hotswap and solder can be used together. The solder holes will then be
@@ -177,18 +186,13 @@ module.exports = {
     choc_v1_stabilizers_diameter: 1.9,
     allow_soldermask_bridges: true,
     include_in_pos_files: false,
-    switch_3dmodel_filename: '',
-    switch_3dmodel_xyz_offset: [0, 0, 0],
-    switch_3dmodel_xyz_rotation: [0, 0, 0],
-    switch_3dmodel_xyz_scale: [1, 1, 1],
-    hotswap_3dmodel_filename: '',
-    hotswap_3dmodel_xyz_offset: [0, 0, 0],
-    hotswap_3dmodel_xyz_rotation: [0, 0, 0],
-    hotswap_3dmodel_xyz_scale: [1, 1, 1],
-    keycap_3dmodel_filename: '',
-    keycap_3dmodel_xyz_offset: [0, 0, 0],
-    keycap_3dmodel_xyz_rotation: [0, 0, 0],
-    keycap_3dmodel_xyz_scale: [1, 1, 1],
+    model_filename: '',
+    model_xyz_offset: [0, 0, 0],
+    model_xyz_rotation: [0, 0, 0],
+    model_xyz_scale: [1, 1, 1],
+    supplier_link: '',
+    manufacturer_part_number: '',
+    do_not_populate: 'DNP',
     from: undefined,
     to: undefined,
     CENTERHOLE: { type: 'net', value: 'GND'},
@@ -197,7 +201,7 @@ module.exports = {
   },
   body: p => {
     const common_top = `
-  (footprint "ceoloide:switch_choc_v1_v2"
+  (footprint "ceoloide:choc_v1_v2"
     (layer "${p.side}.Cu")
     ${p.at}
     (property "Reference" "${p.ref}"
@@ -206,7 +210,10 @@ module.exports = {
       ${p.ref_hide}
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (attr ${p.include_in_pos_files ? '' : 'exclude_from_pos_files'} exclude_from_bom${p.allow_soldermask_bridges ? ' allow_soldermask_bridges' : ''})
+    (attr ${p.include_in_pos_files ? '' : 'exclude_from_pos_files'}${p.allow_soldermask_bridges ? ' allow_soldermask_bridges' : ''})
+    ${p.supplier_link ? `    (property "Switch Supplier Link" "${p.supplier_link}")` : ''}
+    ${p.manufacturer_part_number ? `    (property "Switch manufacturer_part_number" "${p.manufacturer_part_number}")` : ''}
+    ${p.do_not_populate ? `    (property "Switch Do Not Populate" "${p.do_not_populate}")` : ''}
 
     ${''/* middle shaft hole */}
     ${p.include_plated_holes ? `
@@ -450,29 +457,13 @@ module.exports = {
     (pad "" thru_hole circle (at ${stab_offset_x_back}5.00 ${stab_offset_y}5.15 ${p.r}) (size 1.9 1.9) (drill 1.6) (layers "*.Cu" "*.Mask") ${p.solder && p.hotswap ? p.to.str : p.include_stabilizer_nets ? p.LEFTSTAB : ''})
     `
 
-    const switch_3dmodel = `
-    (model ${p.switch_3dmodel_filename}
-      (offset (xyz ${p.switch_3dmodel_xyz_offset[0]} ${p.switch_3dmodel_xyz_offset[1]} ${p.switch_3dmodel_xyz_offset[2]}))
-      (scale (xyz ${p.switch_3dmodel_xyz_scale[0]} ${p.switch_3dmodel_xyz_scale[1]} ${p.switch_3dmodel_xyz_scale[2]}))
-      (rotate (xyz ${p.switch_3dmodel_xyz_rotation[0]} ${p.switch_3dmodel_xyz_rotation[1]} ${p.switch_3dmodel_xyz_rotation[2]}))
+    const model = `
+    (model ${p.model_filename}
+      (offset (xyz ${p.model_xyz_offset[0]} ${p.model_xyz_offset[1]} ${p.model_xyz_offset[2]}))
+      (scale (xyz ${p.model_xyz_scale[0]} ${p.model_xyz_scale[1]} ${p.model_xyz_scale[2]}))
+      (rotate (xyz ${p.model_xyz_rotation[0]} ${p.model_xyz_rotation[1]} ${p.model_xyz_rotation[2]}))
     )
     `
-
-    const hotswap_3dmodel = `
-    (model ${p.hotswap_3dmodel_filename}
-      (offset (xyz ${p.hotswap_3dmodel_xyz_offset[0]} ${p.hotswap_3dmodel_xyz_offset[1]} ${p.hotswap_3dmodel_xyz_offset[2]}))
-      (scale (xyz ${p.hotswap_3dmodel_xyz_scale[0]} ${p.hotswap_3dmodel_xyz_scale[1]} ${p.hotswap_3dmodel_xyz_scale[2]}))
-      (rotate (xyz ${p.hotswap_3dmodel_xyz_rotation[0]} ${p.hotswap_3dmodel_xyz_rotation[1]} ${p.hotswap_3dmodel_xyz_rotation[2]}))
-    )
-	  `
-
-    const keycap_3dmodel = `
-    (model ${p.keycap_3dmodel_filename}
-      (offset (xyz ${p.keycap_3dmodel_xyz_offset[0]} ${p.keycap_3dmodel_xyz_offset[1]} ${p.keycap_3dmodel_xyz_offset[2]}))
-      (scale (xyz ${p.keycap_3dmodel_xyz_scale[0]} ${p.keycap_3dmodel_xyz_scale[1]} ${p.keycap_3dmodel_xyz_scale[2]}))
-      (rotate (xyz ${p.keycap_3dmodel_xyz_rotation[0]} ${p.keycap_3dmodel_xyz_rotation[1]} ${p.keycap_3dmodel_xyz_rotation[2]}))
-    )
-	  `
 
     const common_bottom = `
   )
@@ -518,9 +509,6 @@ module.exports = {
       if (p.reversible || p.side == "B") {
         final += hotswap_back
       }
-      if (p.hotswap_3dmodel_filename) {
-        final += hotswap_3dmodel
-      }
     }
     if (p.solder) {
       final += solder_common
@@ -532,12 +520,8 @@ module.exports = {
       }
     }
 
-    if (p.switch_3dmodel_filename) {
-      final += switch_3dmodel
-    }
-
-    if (p.keycap_3dmodel_filename) {
-      final += keycap_3dmodel
+    if (p.model_filename) {
+      final += model
     }
 
     final += common_bottom
