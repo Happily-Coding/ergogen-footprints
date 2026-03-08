@@ -63,10 +63,10 @@ module.exports = {
     include_silkscreen: true,
     include_fabrication: true,
     include_courtyard: true,
-    connector_3dmodel_filename: '',
-    connector_3dmodel_xyz_offset: [0, 0, 0],
-    connector_3dmodel_xyz_scale: [1, 1, 1],
-    connector_3dmodel_xyz_rotation: [0, 0, 0],
+    model_filename: '',
+    model_xyz_offset: [0, 0, 0],
+    model_xyz_scale: [1, 1, 1],
+    model_xyz_rotation: [0, 0, 0],
     BAT_P: { type: 'net', value: 'BAT_P' },
     BAT_N: { type: 'net', value: 'GND' },
   },
@@ -76,7 +76,7 @@ module.exports = {
       p.local_net("2"),
     ];
 
-    const standard_opening = `
+const standard_opening = `
     (footprint "ceoloide:battery_connector_jst_ph_2"
         (layer "${p.side}.Cu")
         ${p.at}
@@ -86,6 +86,7 @@ module.exports = {
             ${p.ref_hide}
             (effects (font (size 1 1) (thickness 0.15)))
         )
+        (attr through_hole allow_soldermask_bridges)
         `
     const front_fabrication = `
         (fp_line (start -2.95 -1.35) (end -2.95 6.25) (stroke (width 0.1) (type solid)) (layer "F.Fab"))
@@ -309,10 +310,10 @@ module.exports = {
         `
 
     const connector_3dmodel = `
-        (model ${p.connector_3dmodel_filename}
-            (offset (xyz ${p.connector_3dmodel_xyz_offset[0]} ${p.connector_3dmodel_xyz_offset[1]} ${p.connector_3dmodel_xyz_offset[2]}))
-            (scale (xyz ${p.connector_3dmodel_xyz_scale[0]} ${p.connector_3dmodel_xyz_scale[1]} ${p.connector_3dmodel_xyz_scale[2]}))
-            (rotate (xyz ${p.connector_3dmodel_xyz_rotation[0]} ${p.connector_3dmodel_xyz_rotation[1]} ${p.connector_3dmodel_xyz_rotation[2]}))
+        (model ${p.model_filename}
+            (offset (xyz ${p.model_xyz_offset[0]} ${p.model_xyz_offset[1]} ${p.model_xyz_offset[2]}))
+            (scale (xyz ${p.model_xyz_scale[0]} ${p.model_xyz_scale[1]} ${p.model_xyz_scale[2]}))
+            (rotate (xyz ${p.model_xyz_rotation[0]} ${p.model_xyz_rotation[1]} ${p.model_xyz_rotation[2]}))
         )
         `
 
@@ -348,7 +349,7 @@ module.exports = {
       final += back_pads;
     }
 
-    if (p.connector_3dmodel_filename) {
+    if (p.model_filename) {
       final += connector_3dmodel
     }
 
