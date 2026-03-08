@@ -511,7 +511,7 @@ module.exports = {
       ${p.ref_hide}
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr through_hole allow_soldermask_bridges)
 
     ${''/* USB socket outline */}
     (fp_line (start 3.556 -18.034) (end 3.556 -16.51) (layer "Dwgs.User") (stroke (width 0.15) (type solid)))
