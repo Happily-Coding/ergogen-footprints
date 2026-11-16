@@ -101,7 +101,7 @@ module.exports = {
       ${p.include_silkscreen ? `(layer "${p.side}.SilkS")` : '(layer "F.Fab")'}
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (attr allow_soldermask_bridges)
+    (attr exclude_from_pos_files exclude_from_bom allow_soldermask_bridges)
     ${p.supplier_link ? `    (property "Standoff Supplier Link" "${p.supplier_link}")` : ''}
     ${p.manufacturer_part_number ? `    (property "Standoff manufacturer_part_number" "${p.manufacturer_part_number}")` : ''}
     ${p.do_not_populate ? `    (property "Standoff Do Not Populate" "${p.do_not_populate}")` : ''}

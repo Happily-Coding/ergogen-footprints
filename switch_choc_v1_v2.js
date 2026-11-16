@@ -210,7 +210,7 @@ module.exports = {
       ${p.ref_hide}
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (attr ${p.include_in_pos_files ? '' : 'exclude_from_pos_files'}${p.allow_soldermask_bridges ? ' allow_soldermask_bridges' : ''})
+    (attr ${p.include_in_pos_files ? 'smd' : 'exclude_from_pos_files'}${p.allow_soldermask_bridges ? ' allow_soldermask_bridges' : ''})
     ${p.supplier_link ? `    (property "Switch Supplier Link" "${p.supplier_link}")` : ''}
     ${p.manufacturer_part_number ? `    (property "Switch manufacturer_part_number" "${p.manufacturer_part_number}")` : ''}
     ${p.do_not_populate ? `    (property "Switch Do Not Populate" "${p.do_not_populate}")` : ''}

@@ -70,6 +70,7 @@ module.exports = {
             ${p.ref_hide}
             (effects (font (size 1 1) (thickness 0.15)))
         )
+        (attr ${p.include_tht ? 'smd through_hole' : 'smd'})
         `
     const front = `
         (fp_line (start 0.25 0) (end 0.75 0) (layer "F.SilkS") (stroke (width 0.1) (type solid)))

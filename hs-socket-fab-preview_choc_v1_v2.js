@@ -76,7 +76,7 @@ module.exports = {
       (layer "${p.side}.SilkS")
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (attr allow_soldermask_bridges)
+    (attr exclude_from_pos_files exclude_from_bom allow_soldermask_bridges)
     ${p.supplier_link ? `    (property "Hotswap Supplier Link" "${p.supplier_link}")` : ''}
     ${p.manufacturer_part_number ? `    (property "Hotswap manufacturer_part_number" "${p.manufacturer_part_number}")` : ''}
     ${p.do_not_populate ? `    (property "Hotswap Do Not Populate" "${p.do_not_populate}")` : ''}
